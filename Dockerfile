@@ -1,14 +1,16 @@
 FROM node:20-alpine AS base
 
-# Install OpenSSL for Prisma
+# Install dependencies for Prisma and native modules
 RUN apk add --no-cache libc6-compat openssl
+ENV PRISMA_CLIENT_ENGINE_TYPE="library"
 
 # Install dependencies only when needed
 FROM base AS deps
 WORKDIR /app
 
 COPY package.json package-lock.json* .npmrc ./
-RUN npm ci
+COPY prisma/ ./prisma/
+RUN npm ci --ignore-scripts
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -18,7 +20,8 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN npm run build
+# Generate Prisma client and build the application
+RUN npx prisma generate && npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner

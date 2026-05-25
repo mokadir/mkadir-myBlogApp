@@ -34,7 +34,7 @@ spec:
               mountPath: /app/data
       containers:
         - name: blogapp-container
-          image: mokadir/blogapp:5
+          image: mokadir/blogapp:6
           imagePullPolicy: Always
           ports:
             - containerPort: 3000

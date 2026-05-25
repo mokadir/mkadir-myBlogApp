@@ -118,6 +118,8 @@ spec:
                 container('tools') {
                     sh '''
                         set -eux
+                        # Set Prisma engine type to library to avoid OpenSSL 1.1 dependency on Alpine
+                        export PRISMA_CLIENT_ENGINE_TYPE="library"
                         npm ci
                         echo "Dependencies installed successfully"
                     '''
