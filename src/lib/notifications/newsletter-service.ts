@@ -10,7 +10,7 @@ export async function subscribeToNewsletter(
   userId?: string
 ): Promise<{ success: boolean; message: string }> {
   // Check if already subscribed
-  const existing = await prisma.newsletterSubscription.findUnique({
+  const existing = await prisma.newsletterSubscription.findFirst({
     where: { email },
   });
 
@@ -67,7 +67,7 @@ export async function unsubscribeFromNewsletter(
 export async function unsubscribeByEmail(
   email: string
 ): Promise<{ success: boolean; message: string }> {
-  const subscription = await prisma.newsletterSubscription.findUnique({
+  const subscription = await prisma.newsletterSubscription.findFirst({
     where: { email },
   });
 

@@ -179,9 +179,10 @@ model Post {
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
-  comments  Comment[]
-  likes     Like[]
-  bookmarks Bookmark[]
+  comments     Comment[]
+  likes        Like[]
+  bookmarks    Bookmark[]
+  notifications Notification[]
 
   @@index([slug])
   @@index([authorId])
@@ -216,7 +217,8 @@ model Comment {
   post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
-  likes CommentLike[]
+  likes        CommentLike[]
+  notifications Notification[]
 
   @@index([postId])
   @@index([authorId])
@@ -293,6 +295,10 @@ model Notification {
   // Related entity (optional)
   postId    String?
   commentId String?
+
+  // Relations to related entities
+  post    Post?    @relation(fields: [postId], references: [id], onDelete: SetNull)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: SetNull)
 
   @@index([recipientId, read])
   @@index([recipientId, createdAt])
