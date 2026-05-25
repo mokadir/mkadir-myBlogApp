@@ -1,8 +1,10 @@
 FROM node:20-alpine AS base
 
+# Install OpenSSL for Prisma
+RUN apk add --no-cache libc6-compat openssl
+
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json package-lock.json* .npmrc ./

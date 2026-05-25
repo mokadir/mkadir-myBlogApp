@@ -258,7 +258,7 @@ export default function NotificationsPage() {
               </div>
               <h3 className="text-lg font-semibold">No notifications yet</h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                We'll notify you when someone interacts with your content or
+                We&apos;ll notify you when someone interacts with your content or
                 when there are important updates.
               </p>
             </div>

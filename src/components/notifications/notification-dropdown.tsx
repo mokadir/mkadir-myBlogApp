@@ -256,7 +256,7 @@ export function NotificationDropdown({
             <Bell className="mx-auto mb-2 h-8 w-8 text-muted-foreground/50" />
             <p className="text-sm text-muted-foreground">No notifications yet</p>
             <p className="mt-1 text-xs text-muted-foreground/70">
-              We'll notify you when something happens
+              We&apos;ll notify you when something happens
             </p>
           </div>
         ) : (
