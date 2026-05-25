@@ -27,8 +27,8 @@ spec:
             - -c
             - |
               mkdir -p /app/data && \
-              chown -R 1001:1001 /app/data && \
-              chmod 777 /app/data
+              chmod 777 /app/data && \
+              echo "Data directory initialized"
           volumeMounts:
             - name: blogapp-data
               mountPath: /app/data
