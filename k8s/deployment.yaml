@@ -15,10 +15,6 @@ spec:
       labels:
         app: blogapp
     spec:
-      securityContext:
-        fsGroup: 1001
-        runAsUser: 1001
-        runAsGroup: 1001
       initContainers:
         - name: init-data-dir
           image: busybox:1.36
@@ -26,14 +22,23 @@ spec:
             - sh
             - -c
             - |
-              mkdir -p /app/data && \
-              chmod 777 /app/data && \
-              echo "Data directory initialized"
+              echo "Creating data directory..."
+              mkdir -p /app/data
+              echo "Setting permissions..."
+              chmod 777 /app/data
+              echo "Data directory initialized successfully"
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
           volumeMounts:
             - name: blogapp-data
               mountPath: /app/data
       containers:
         - name: blogapp-container
+          securityContext:
+            runAsUser: 1001
+            runAsGroup: 1001
+            allowPrivilegeEscalation: false
           image: mokadir/blogapp:8
           imagePullPolicy: Always
           ports:
