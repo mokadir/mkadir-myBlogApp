@@ -1,14 +1,32 @@
 import { NextResponse } from "next/server";
 import { hash } from "bcrypt";
 import { randomBytes } from "crypto";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { registerSchema } from "@/lib/validations/auth";
 import { sendEmail, getVerificationEmailHtml } from "@/lib/email";
+
+// Server-side schema for registration (doesn't require confirmPassword or acceptTerms)
+const registerServerSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be less than 50 characters"),
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Please enter a valid email address"),
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .max(100, "Password must be less than 100 characters"),
+});
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, password } = registerSchema.parse(body);
+    const { name, email, password } = registerServerSchema.parse(body);
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
