@@ -20,6 +20,9 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Ensure public directory exists (for Kaniko compatibility)
+RUN mkdir -p public/images
+
 # Generate Prisma client and build the application
 RUN npx prisma generate && npm run build
 
@@ -33,10 +36,12 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Copy public assets (create directory if it doesn't exist in builder)
+RUN mkdir -p /app/public
 COPY --from=builder /app/public ./public
 
 # Set the correct permission for prerender cache
-RUN mkdir .next
+RUN mkdir -p .next
 RUN chown nextjs:nodejs .next
 
 # Automatically leverage output traces to reduce image size
