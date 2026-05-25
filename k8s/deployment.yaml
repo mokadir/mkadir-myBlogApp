@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: ns-blogapp
+  name: blogapp-deployment
+  labels:
+    app: blogapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blogapp
+  template:
+    metadata:
+      labels:
+        app: blogapp
+    spec:
+      securityContext:
+        fsGroup: 1001
+        runAsUser: 1001
+        runAsGroup: 1001
+      initContainers:
+        - name: init-data-dir
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /app/data && \
+              chown -R 1001:1001 /app/data && \
+              chmod 777 /app/data
+          volumeMounts:
+            - name: blogapp-data
+              mountPath: /app/data
+      containers:
+        - name: blogapp-container
+          image: mokadir/blogapp:1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+            - name: HOSTNAME
+              value: "0.0.0.0"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: blogapp-secrets
+                  key: database-url
+            - name: NEXTAUTH_URL
+              value: "http://192.168.2.236:30021"
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: blogapp-secrets
+                  key: nextauth-secret
+            - name: CLOUDINARY_CLOUD_NAME
+              value: "your-cloud-name"
+            - name: CLOUDINARY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: blogapp-secrets
+                  key: cloudinary-api-key
+            - name: CLOUDINARY_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: blogapp-secrets
+                  key: cloudinary-api-secret
+            - name: SMTP_HOST
+              value: "smtp.gmail.com"
+            - name: SMTP_PORT
+              value: "587"
+            - name: SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: blogapp-secrets
+                  key: smtp-user
+            - name: SMTP_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: blogapp-secrets
+                  key: smtp-pass
+            - name: EMAIL_FROM
+              value: "noreply@modernblog.com"
+            - name: EMAIL_FROM_NAME
+              value: "ModernBlog"
+            - name: CRON_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: blogapp-secrets
+                  key: cron-secret
+            - name: NEXT_PUBLIC_APP_URL
+              value: "http://192.168.2.236:30021"
+            - name: NEXT_PUBLIC_APP_NAME
+              value: "ModernBlog"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          volumeMounts:
+            - name: blogapp-data
+              mountPath: /app/data
+      volumes:
+        - name: blogapp-data
+          persistentVolumeClaim:
+            claimName: blogapp-pvc
