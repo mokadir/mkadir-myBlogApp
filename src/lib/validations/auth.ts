@@ -26,6 +26,7 @@ export const registerSchema = z
       .email("Please enter a valid email address"),
     password: z
       .string()
+      .trim()
       .min(1, "Password is required")
       .min(8, "Password must be at least 8 characters")
       .max(100, "Password must be less than 100 characters")
@@ -55,6 +56,7 @@ export const resetPasswordSchema = z
     token: z.string().min(1, "Reset token is required"),
     password: z
       .string()
+      .trim()
       .min(1, "Password is required")
       .min(8, "Password must be at least 8 characters")
       .max(100, "Password must be less than 100 characters")
@@ -86,8 +88,10 @@ export const profileSchema = z.object({
 export const changePasswordSchema = z
   .object({
     currentPassword: z.string().min(1, "Current password is required"),
+    // trim newPassword input
     newPassword: z
       .string()
+      .trim()
       .min(1, "New password is required")
       .min(8, "Password must be at least 8 characters")
       .max(100, "Password must be less than 100 characters")
