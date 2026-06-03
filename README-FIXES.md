@@ -36,6 +36,9 @@ kubectl exec -n ns-blogapp deploy/blogapp-deployment -- npx prisma@5.22.0 db pus
 - Added `content` to the form's `defaultValues`
 - Removed redundant `content` override in `onSubmit` since it's now in the form data
 
+### e) `src/components/layout/header.tsx`
+- Fixed: Removed `text-destructive` class from signout button which made it invisible in dark mode
+
 ## 3. Build & Deploy
 ```bash
 docker build -t mokadir/blogapp:11 .
