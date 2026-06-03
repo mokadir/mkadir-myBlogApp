@@ -69,11 +69,13 @@ export function PostEditor({ initialData }: PostEditorProps) {
     watch,
     setValue,
     getValues,
+    trigger,
   } = useForm<PostInput>({
     resolver: zodResolver(postSchema),
     defaultValues: {
       title: initialData?.title || "",
       subtitle: initialData?.subtitle || "",
+      content: initialData?.content || "",
       excerpt: initialData?.excerpt || "",
       coverImage: initialData?.coverImage || "",
       tags: initialData?.tags || [],
@@ -136,6 +138,11 @@ export function PostEditor({ initialData }: PostEditorProps) {
 
     return () => clearTimeout(saveTimer);
   }, [content, tags, postId, getValues]);
+
+  // Keep form content in sync with Tiptap editor
+  React.useEffect(() => {
+    setValue("content", content);
+  }, [content, setValue]);
 
   // Update preview when content changes
   React.useEffect(() => {
@@ -204,10 +211,9 @@ export function PostEditor({ initialData }: PostEditorProps) {
     try {
       const payload = {
         ...data,
-        content,
         tags,
         slug: slugify(data.title),
-        readTime: calculateReadTime(content),
+        readTime: calculateReadTime(data.content),
       };
 
       const url = postId ? `/api/posts/${postId}` : "/api/posts";

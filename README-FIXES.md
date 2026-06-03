@@ -31,6 +31,11 @@ kubectl exec -n ns-blogapp deploy/blogapp-deployment -- npx prisma@5.22.0 db pus
 - Added Dashboard link
 - Uses existing `DropdownMenu` components
 
+### d) `src/components/editor/post-editor.tsx`
+- Fixed: Tiptap content was managed as local React state but not synced to react-hook-form. Added `setValue("content", content)` in a useEffect so the zod validation sees the rich text content during form submission.
+- Added `content` to the form's `defaultValues`
+- Removed redundant `content` override in `onSubmit` since it's now in the form data
+
 ## 3. Build & Deploy
 ```bash
 docker build -t mokadir/blogapp:11 .
