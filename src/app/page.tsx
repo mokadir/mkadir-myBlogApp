@@ -9,6 +9,8 @@ import { NewsletterSection } from "@/components/home/newsletter-section";
 import { FeaturedPosts } from "@/components/posts/featured-posts";
 import type { PostWithAuthor } from "@/types";
 
+export const dynamic = "force-dynamic";
+
 async function HomeContent() {
   // Fetch data with error handling for build time
   let featuredPosts: any[] = [];

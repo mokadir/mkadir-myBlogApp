@@ -39,6 +39,10 @@ kubectl exec -n ns-blogapp deploy/blogapp-deployment -- npx prisma@5.22.0 db pus
 ### e) `src/components/layout/header.tsx`
 - Fixed: Removed `text-destructive` class from signout button which made it invisible in dark mode
 
+### f) `src/app/page.tsx`
+- Added `export const dynamic = "force-dynamic"` to force server-side rendering on every request
+- Fixes the issue where the home page was statically generated at build time when the database was unreachable, and would never update to show new posts
+
 ## 3. Build & Deploy
 ```bash
 docker build -t mokadir/blogapp:11 .
