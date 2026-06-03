@@ -48,34 +48,14 @@ export async function POST(req: Request) {
         password: hashedPassword,
         role: "READER",
         provider: "credentials",
-        // Initially not verified - will verify via email
-        emailVerified: null,
+        // Auto-verify email since SMTP is not configured
+        emailVerified: new Date(),
       },
-    });
-
-    // Generate verification token
-    const verificationToken = randomBytes(32).toString("hex");
-    const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-
-    await prisma.verificationToken.create({
-      data: {
-        identifier: email,
-        token: verificationToken,
-        expires: tokenExpiry,
-      },
-    });
-
-    // Send verification email
-    await sendEmail({
-      to: email,
-      subject: "Verify your ModernBlog account",
-      html: getVerificationEmailHtml(verificationToken),
     });
 
     return NextResponse.json(
       {
-        message:
-          "Account created successfully! Please check your email to verify your account.",
+        message: "Account created successfully! You can now sign in.",
         user: {
           id: user.id,
           name: user.name,

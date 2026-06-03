@@ -39,7 +39,7 @@ spec:
             runAsUser: 1001
             runAsGroup: 1001
             allowPrivilegeEscalation: false
-          image: mokadir/blogapp:10
+          image: mokadir/blogapp:11
           imagePullPolicy: Always
           ports:
             - containerPort: 3000

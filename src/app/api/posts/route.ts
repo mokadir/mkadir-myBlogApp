@@ -116,7 +116,7 @@ export async function POST(req: Request) {
         excerpt: data.excerpt || null,
         coverImage: data.coverImage || null,
         tags: data.tags,
-        categoryId: data.categoryId || null,
+        categoryId: data.categoryId && data.categoryId !== "" ? data.categoryId : null,
         status: data.status,
         featured: data.featured,
         seoTitle: data.seoTitle || null,
